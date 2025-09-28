@@ -21,11 +21,11 @@ int main()
 }*/
 #include<stdio.h>
 void swap(int *a,int *b)//这里指的为空间内的值交换；平时的赋值是赋值一个副本，将值在另一个空间内；void在前指不会返回任何值给试用者
-{//隐形显性赋值，void
+{
         int temp=*a;
         *a=*b;
         *b=temp;
-}//为什么赋值是可以t=a，a=b，b=t不是产生新的副本吗
+}//为什么赋值是可以t=a，a=b，b=t不是产生新的副本吗；void又如何使用
 int main()
 {
     int x,y,z;
