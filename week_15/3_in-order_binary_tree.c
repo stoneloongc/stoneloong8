@@ -25,20 +25,20 @@ void createtree(bitree* t)
     }
     else{
         *t = (bitree)malloc(sizeof(treenode));
-        (*t)->data = ch;
         createtree(&(*t)->lchild);
+        (*t)->data = ch;
         createtree(&(*t)->rchild);
     }
 }
 
-void preorder(bitree t)
+void inorder(bitree t)
 {
     if(t == NULL)
     {
         return;
     }
-    printf("%c",t->data);
     preorder(t->lchild);
+    printf("%c",t->data);
     preorder(t->rchild);
 }
 
