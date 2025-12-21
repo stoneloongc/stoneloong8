@@ -1,19 +1,3 @@
-/*
-流程
-
-定义蛇食物结构体全局变量变化位移页面大小
-初始化蛇食物
-不阻塞
-位移控制
-画蛇食物界面
-控制移动碰撞检测，判断是否吃食物，蛇位移
-主函数非阻塞，恢复，主循环，位置，控制，画，移动，控制速度
-
-涉及知识
-
-结构体，自定义函数，循环语句，判断，限制速度，非阻塞设置（改变Linux下的终端属性，行缓存，回显等），清屏
-贪吃蛇运行逻辑
-*/
 #include<stdio.h>
 #include<time.h>
 #include<unistd.h>
@@ -23,7 +7,6 @@
 #define WIDE 50
 #define HIGH 20
 
-//定义食物蛇变量
 struct BODY
 {
     int x;
@@ -43,45 +26,6 @@ int move_y = 0;
 
 int game_over = 0;
 
-// 保存原始终端属性
-struct termios original_termios;
-
-// 设置非阻塞输入
-void setNonBlockingInput() {
-    struct termios new_termios;
-    
-    // 获取当前终端设置
-    tcgetattr(STDIN_FILENO, &original_termios);
-    
-    // 复制原始设置
-    new_termios = original_termios;
-    
-    // 关闭规范模式和回显
-    new_termios.c_lflag &= ~(ICANON | ECHO);
-    
-    // 设置最小字符数和超时（非阻塞）
-    new_termios.c_cc[VMIN] = 0;
-    new_termios.c_cc[VTIME] = 0;
-    
-    // 应用新的终端属性
-    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
-}
-
-// 恢复终端设置
-void resetTerminal() {
-    tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
-}
-
-// 读取输入（非阻塞）
-int getInput() {
-    char c = 0;
-    if (read(STDIN_FILENO, &c, 1) == 1) {
-        return c;
-    }
-    return 0;
-}
-
-//分配坐标
 void position(void)
 {
     snake.size = 2;
@@ -139,6 +83,47 @@ void draw(void)
      printf("Score: %d | Use WASD to move, Q to quit\n", snake.size - 2);
 }
 
+
+// 保存原始终端属性
+struct termios original_termios;
+
+// 设置非阻塞输入
+void setNonBlockingInput() {
+    struct termios new_termios;
+    
+    // 获取当前终端设置
+    tcgetattr(STDIN_FILENO, &original_termios);
+    
+    // 复制原始设置
+    new_termios = original_termios;
+    
+    // 关闭规范模式和回显
+    new_termios.c_lflag &= ~(ICANON | ECHO);
+    
+    // 设置最小字符数和超时（非阻塞）
+    new_termios.c_cc[VMIN] = 0;
+    new_termios.c_cc[VTIME] = 0;
+    
+    // 应用新的终端属性
+    tcsetattr(STDIN_FILENO, TCSANOW, &new_termios);
+}
+
+// 恢复终端设置
+void resetTerminal() {
+    tcsetattr(STDIN_FILENO, TCSANOW, &original_termios);
+}
+
+// 读取输入（非阻塞）
+int getInput() {
+    char c = 0;
+    if (read(STDIN_FILENO, &c, 1) == 1) {
+        return c;
+    }
+    return 0;
+}
+
+
+
 void key(void)
 {
     char intput = getInput();
@@ -171,7 +156,6 @@ void mv(void)
         
     }
 
-
         if(new_x == food.x && new_y == food.y)
         {
                 snake.size++;
@@ -188,13 +172,15 @@ void mv(void)
 }
 
 
+
+
 int main()
 {
     srand(time(NULL));
     
     setNonBlockingInput();
     
-    atexit(resetTerminal);//不恢复终端可能会对下一个终端产生影响，同时同一个终端要求可能也不同。
+    atexit(resetTerminal);
     position();
     while(!game_over)
     {
@@ -207,4 +193,3 @@ int main()
     printf("游戏结束\n");
     return 0;
 }
-//如果要达到界但是没有结束，说明一帧与一帧间的间隔把碰界那一刻跳过了
