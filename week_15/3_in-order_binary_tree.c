@@ -37,9 +37,9 @@ void inorder(bitree t)
     {
         return;
     }
-    preorder(t->lchild);
+    inorder(t->lchild);
     printf("%c",t->data);
-    preorder(t->rchild);
+    inorder(t->rchild);
 }
 
 int main()
@@ -47,7 +47,7 @@ int main()
     bitree t;
     createtree(&t);
 
-    preorder(t);
+    inorder(t);
     printf("\n");
 
     return 0;
